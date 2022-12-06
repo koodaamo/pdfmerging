@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pdfmerging"
+description = "pdfmerging is a set of utilities and PDF merge server"
+readme = "README.md"
+requires-python = ">=3.10.2"
+license = "MIT"
+authors = [
+    { name = "Petri Savolainen", email = "petri@koodaamo.fi"},
+]
+classifiers = [
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python",
+    "Topic :: Internet",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development",
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Framework :: AsyncIO",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11"
+]
+dependencies = [
+    "pymupdf",
+    "python-dotenv",
+    "pyyaml",
+    "fastapi"
+]
+dynamic = ["version"]
+
+[project.scripts]
+pdfmerge = "pdfmerging.merging:cmdline"
+
+[project.urls]
+Homepage = "https://github.com/koodaamo/pdfmerging"
+Documentation = "https://github.com/koodaamo/pdfmerging"
+
+[tool.hatch.version]
+path = "pdfmerging/__init__.py"
+
