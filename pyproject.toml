@@ -33,6 +33,7 @@ dependencies = [
     "pymupdf",
     "python-dotenv",
     "pyyaml",
+    "python-magic",
     "fastapi"
 ]
 dynamic = ["version"]
