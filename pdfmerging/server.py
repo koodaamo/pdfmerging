@@ -3,10 +3,10 @@ import sys
 from datetime import datetime
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI, Form, Request, Path
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi import HTTPException, Depends
-
+from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 from .producer import produce_pdf
 from .config import merged_root, setup_root, generated_url_root
@@ -18,12 +18,24 @@ executor = ProcessPoolExecutor(max_workers=num_jobs)
 
 security = HTTPBearer()
 
-app = FastAPI(title='PDF Merger')
+tag_defs = [
+    {
+        "name": "merging",
+        "description": "API for merging PDF templates with data",
+    },
+]
+
+
+class MergedPDF(BaseModel):
+    url: str
+
+
+app = FastAPI(title='PDF Merger', version="1.0", openapi_tags=tag_defs)
 app.mount(f"/{generated_url_root}", StaticFiles(directory=merged_root), name="merged")
 
-@app.post("/{org_id}/{doc_id}")
-async def merge(org_id, doc_id, request:Request, credentials=Depends(security)):
-    "POST a merge request for particular document case of an organization"
+@app.post("/{org_id}/{doc_id}", tags=["merging"], response_model=MergedPDF)
+async def merge(request:Request, org_id:str=Path(title="id of the organization"), doc_id:str=Path(title="id of the document case"), credentials=Depends(security)):
+    "Merge the given document with the submitted x-www-urlencoded form data"
 
     if credentials.credentials != token:
         raise HTTPException(status_code=403, detail="Incorrect token")
