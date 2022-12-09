@@ -5,7 +5,7 @@ from watchfiles import awatch, Change
 import magic
 import fitz
 import yaml
-from pdfmerging.config import setup_root, merged_root, definitionsfile, fieldsfile
+from pdfmerging.config import setup_root, definitionsfile, fieldsfile
 from pdfmerging.merging import extract_fields
 
 
@@ -41,7 +41,7 @@ async def main():
                     except Exception as exc:
                         logger.error(f"field extraction from {doc_file.name} failed: ", exc)
                     else:
-                        dump_path =  merged_root / org.name / doc_case.name / fieldsfile
+                        dump_path =  setup_root / org.name / doc_case.name / fieldsfile
                         dump_path.parent.mkdir(parents=True, exist_ok=True)
                         with open(dump_path, "w", encoding="utf-8") as dumpfile:
                             dumpfile.write(yaml.dump(tuple(fields)))

@@ -14,3 +14,5 @@ token = env("TOKEN")
 root = Path(rootdir)
 setup_root = root / "setup"
 merged_root = root / "merged"
+
+generated_url_root = "pdfs"

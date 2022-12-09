@@ -9,17 +9,21 @@ from fastapi import HTTPException, Depends
 
 from fastapi.staticfiles import StaticFiles
 from .producer import produce_pdf
-from .config import merged_root, setup_root, templatefile, fieldsfile, host, token
+from .config import merged_root, setup_root, generated_url_root
+from .config import templatefile, fieldsfile, host, token
+
+
 num_jobs = 10
 executor = ProcessPoolExecutor(max_workers=num_jobs)
 
 security = HTTPBearer()
 
 app = FastAPI(title='PDF Merger')
-app.mount("/docs", StaticFiles(directory=merged_root), name="merged")
+app.mount(f"/{generated_url_root}", StaticFiles(directory=merged_root), name="merged")
 
 @app.post("/{org_id}/{doc_id}")
 async def merge(org_id, doc_id, request:Request, credentials=Depends(security)):
+    "POST a merge request for particular document case of an organization"
 
     if credentials.credentials != token:
         raise HTTPException(status_code=403, detail="Incorrect token")
@@ -50,5 +54,5 @@ async def merge(org_id, doc_id, request:Request, credentials=Depends(security)):
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Merge failed: {exc}")
 
-    return {"url": f"https://{host}/docs/{org_id}/{doc_id}/{outfilename}"}
+    return {"url": f"https://{host}/{generated_url_root}/{org_id}/{doc_id}/{outfilename}"}
 
