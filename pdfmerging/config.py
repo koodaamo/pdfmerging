@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 from os import getenv as env
 from pathlib import Path
+import logging
 
 load_dotenv()
 
@@ -16,3 +17,5 @@ setup_root = root / "setup"
 merged_root = root / "merged"
 
 generated_url_root = "pdfs"
+
+loglevel = getattr(logging, env("LOGLEVEL"))

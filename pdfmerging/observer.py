@@ -5,19 +5,30 @@ from watchfiles import awatch, Change
 import magic
 import fitz
 import yaml
-from pdfmerging.config import setup_root, definitionsfile, fieldsfile
+from datetime import datetime, timedelta
+from pdfmerging.config import setup_root, templatefile, definitionsfile, fieldsfile, loglevel
 from pdfmerging.merging import extract_fields
 
 
 logging.basicConfig()
 logger = logging.getLogger("observer")
-logger.setLevel(logging.INFO)
+logger.setLevel(loglevel)
+logger.info(f"loglevel set to {logger.level}")
 
+cache = {}
 
 async def main():
     logger.info(f"watching for changes in {setup_root}")
     async for changes in awatch(setup_root):
-        for change_type, file_path in changes:
+        for change in changes:
+
+            if change in cache and (datetime.now() - cache[change]) < timedelta(seconds=5):
+                logger.debug("change already handled, passing")
+                continue
+            else:
+                cache[change] = datetime.now()
+
+            change_type, file_path = change
             doc_file = Path(file_path)
             doc_case = doc_file.parent
             org = doc_case.parent
@@ -26,11 +37,13 @@ async def main():
                 if doc_case == setup_root or org == setup_root:
                     logger.warning(f"not processing file at invalid location {file_path}")
                     continue
-                if not doc_type.startswith("PDF"):
-                    logger.warning(f"invalid {doc_type} file added at {file_path}")
+                if doc_file.name in (templatefile, fieldsfile):
                     continue
                 if doc_file.name != definitionsfile:
                     logger.warning(f"file name '{doc_file.name}' is not a definitions file ('{definitionsfile}'), not processing")
+                    continue
+                if not doc_type.startswith("PDF"):
+                    logger.warning(f"invalid {doc_type} file added at {file_path}")
                     continue
 
                 logger.info(f"processing PDF file {doc_file.name} {change_type.name}...")
