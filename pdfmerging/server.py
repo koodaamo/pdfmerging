@@ -64,6 +64,7 @@ async def generate_pdf(request:Request, org_id:str=Path(title="id of the organiz
         if not definitions_pdf_path.is_file():
             raise HTTPException(status_code=404, detail="neither fields config nor field definitions source PDF found")
 
+        loop = asyncio.get_running_loop()
         extractor = loop.run_in_executor(executor, produce_definitions, definitions_pdf_path, fields_dump_path)
         try:
             await extractor
