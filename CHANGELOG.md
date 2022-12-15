@@ -1,3 +1,14 @@
+1.5 (2022-12-15)
+-----------------
+
+ - drop observer; do fields extraction upon first API call that requires it
+ - fixes
+
+1.4 (unreleased)
+-----------------
+
+ - interim non-release
+
 1.3 (2022-12-10)
 -----------------
 
