@@ -18,6 +18,6 @@ merged_root = root / "merged"
 
 generated_url_root = "pdfs"
 
-workers = env("WORKERS")
+workers = int(env("WORKERS"))
 
 loglevel = getattr(logging, env("LOGLEVEL"))
