@@ -78,7 +78,7 @@ class FontInfo(yaml.YAMLObject):
          return False
 
    def __hash__(self):
-      return hash((self.ext, self.type, self.encoding, self.name))
+      return hash(self.name)
 
    def __repr__(self):
       encoding = f" {self.encoding}" if self.encoding else ""
@@ -100,16 +100,17 @@ def extract_fonts(doc):
 @cache
 def get_docfont(font, doc):
    for pagefont in extract_fonts(doc):
-      if font == pagefont:
+      if font == pagefont and pagefont.type !="Type0":
+         print(pagefont.page)
          return pagefont
    raise LookupError(font.name)
 
 
 @cache
-def get_pagefont(font, page):
+def get_pagefont(font:FontInfo, page):
    for pagefont in page.get_fonts():
       candidate = FontInfo(pagefont)
-      if candidate == font:
+      if candidate == font and candidate.type !="Type0":
           return candidate
    raise LookupError(font.name)
 
@@ -147,7 +148,7 @@ def merge_doc(doc, fields, data):
             raise Exception(f"No field value given for {exc}")
 
          try:
-            field.font = get_pagefont(field.font, page)
+            field.font = get_docfont(field.font, doc)
          except LookupError as exc:
             raise Exception(f"Font {exc} not found in document")
 

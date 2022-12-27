@@ -1,3 +1,10 @@
+1.5.1 (2022-12-22)
+------------------
+
+ - consider fonts equal if just name matches
+ - look up fonts over whole doc
+ - tentatively drop support for Type0 fonts
+
 1.5 (2022-12-15)
 -----------------
 
