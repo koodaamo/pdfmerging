@@ -2,5 +2,5 @@
 
 Merge document templates with data.
 
-Copyright 2022-2023 Petri Savolainen <petri@koodaamo.fi>.
+Uses AGPL-licensed PyMuPDF. Apart from PyMUPDF, Copyright 2022-2025 Petri Savolainen <petri@koodaamo.fi>.
 Licensed under GNU AGPL.
